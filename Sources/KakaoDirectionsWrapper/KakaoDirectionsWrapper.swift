@@ -40,7 +40,7 @@ public class DirectionAPI {
                         carFuel: CarFuelType = .gasoline,
                         carHipass: Bool = false,
                         summary: Bool = false,
-    ) async throws -> (result: KakaoDirectionsResponse?, statusCode: Int) {
+    ) async throws -> (result: KakaoDirectionResponse?, statusCode: Int) {
         var address = "https://apis-navi.kakaomobility.com/v1/directions?"
         // Add origin info
         address.append("origin=\(origin.x),\(origin.y)\(origin.name != nil ? ",name=\(origin.name!)" : "")")
@@ -99,7 +99,7 @@ public class DirectionAPI {
         
         let url = URL(string: address)
         guard let url = url else {
-            throw KakaoDirectionsError.internalError
+            throw KakaoDirectionError.internalError
         }
         var urlReq = URLRequest(url: url)
         urlReq.httpMethod = "GET"
@@ -117,14 +117,14 @@ public class DirectionAPI {
             let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
             guard let json = json else {
                 print("Failed to parse to json")
-                throw KakaoDirectionsError.internalError
+                throw KakaoDirectionError.internalError
             }
             
-            let result = KakaoDirectionsResponse(json)
+            let result = KakaoDirectionResponse(json)
             return (result, response.statusCode)
         } catch {
             print("Failed to recive data from server. \(error)")
-            throw KakaoDirectionsError.internalError
+            throw KakaoDirectionError.internalError
         }
     }
     

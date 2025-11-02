@@ -5,6 +5,6 @@
 //  Created by 민현규 on 11/2/25.
 //
 
-public enum KakaoDirectionsError: Error {
+public enum KakaoDirectionError: Error {
     case internalError
 }

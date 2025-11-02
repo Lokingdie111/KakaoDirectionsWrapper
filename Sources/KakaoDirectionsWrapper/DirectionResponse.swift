@@ -13,7 +13,7 @@
 /// 카카오 길찾기API에서 응답한 JSON데이터를 구조체로 저장하기 위한 구조체입니다.
 /// API에서 온 JSON을 [String: Any] 타입으로 캐스팅하여 init() 함수에 전달해주십시오.
 /// 상세한 프로퍼티의 정보는 카카오 길찾기API Document에서 확인하십시오. https://developers.kakaomobility.com/docs/navi-api/start/
-public struct KakaoDirectionResponse {
+public struct DirectionResponse {
     /// 경로 요청 ID
     let trans_id: String
     /// 경로 정보
@@ -63,7 +63,7 @@ public struct KakaoDirectionResponse {
     }
 }
 
-extension KakaoDirectionResponse {
+extension DirectionResponse {
     struct Fare {
         /// 택시 요금 (원)
         let taxi: Int

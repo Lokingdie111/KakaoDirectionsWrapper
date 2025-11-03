@@ -14,7 +14,7 @@ Repo 주소. `https://github.com/Lokingdie111/KakaoDirectionsWrapper.git`
 ### 단일 출발지, 단일 목적지 - request()
 단일 출발지와 단일 목적지를 기준으로 길찾기 정보를 요청할때 사용합니다. \
 경유지는 최대 5개, 경로의 총 길이는 1500km를 넘지 않아야합니다.
-|함수인자|설명|타입
+|함수인자|설명|타입|
 |-----|---|--|
 |origin|출발지 정보 (**필수**)|Position|
 |destination|목적지 정보 (**필수**)|Position|
@@ -68,9 +68,10 @@ Task {
 
 ```
 ### 단일 출발지, 다중 목적지 - requestMultiDestiation()
-단일 출발지와 다중 목적지로 길찾기를 요청합니다. \ 
-자세한 길 정보는 반환하지 않습니다. 짧게 요약된 거리정보 예상 시간정보등만이 반환됩니다. \
+단일 출발지와 다중 목적지로 길찾기를 요청합니다. \
+자세한 길 정보는 반환하지 않습니다. 짧게 요약된 거리정보 예상 시간정보등만이 반환됩니다.
 - priority에 .recommend는 사용할수 없습니다.
+
 |함수인자|설명|타입|
 |-----|---|--|
 |origin|출발지 정보 (**필수**)|Position|
@@ -94,8 +95,9 @@ Task {
 ```
 ### 다중 출발지, 단일 목적지 - requestMultiOrigin()
 다중 출발지와 단일 목적지로 길찾기를 요청합니다. \ 
-자세한 길 정보는 반환하지 않습니다. 짧게 요약된 거리정보 예상 시간정보등만이 반환됩니다. \
+자세한 길 정보는 반환하지 않습니다. 짧게 요약된 거리정보 예상 시간정보등만이 반환됩니다.
 - priority에 .recommend는 사용할수 없습니다.
+
 |함수인자|설명|타입|
 |-----|---|--|
 |origins|출발지 배열 (**필수**)|[PositionWithKey]|
@@ -121,3 +123,11 @@ Task {
 request()와 requestMultiWaypoints()는 이 구조체로 반환됩니다. \
 이 구조체는 API응답 결과를 담고있습니다. \
 각각의 프로퍼티들의 의미는 Xcode의 Quick-help 또는 카카오 길찾기 API 도큐먼트에서 확인할수 있습니다.
+[카카오 길찾기 API 바로가기](https://developers.kakaomobility.com/docs/navi-api)
+
+## MultiDirectionResponse
+requestMultiOrigin()과 requestMultiDestination()은 이 구조체로 반환됩니다. \
+이 구조체는 API응답 결과를 담고있습니다. \
+각각의 프로퍼티들의 의미는 Xcode의 Quick-help 또는 카카오 길찾기 API 도큐먼트에서 확인할수 있습니다. \
+DirectionResponse와 비교해 이 구조체는 경로의 상세정보를 포함하지 않습니다.
+[카카오 길찾기 API 바로가기](https://developers.kakaomobility.com/docs/navi-api)

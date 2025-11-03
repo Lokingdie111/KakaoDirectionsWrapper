@@ -16,7 +16,7 @@ public class DirectionAPI {
     /// - Parameters:
     ///     - origin: 출발지 정보
     ///     - destination: 목적지 정보
-    ///     - wayPoints: 경유지 정보. (최대 5개)
+    ///     - wayPoints: 경유지 배열(최대 5개)
     ///     - priority: 경로 탐색 우선순위
     ///     - avoid: 경로 탐색 제한
     ///     - roadEvent: 도로 통제 정보 반영 옵션
@@ -111,6 +111,9 @@ public class DirectionAPI {
             let response = _response as! HTTPURLResponse
             
             guard response.statusCode == 200 else {
+                if response.statusCode == 401 {
+                    throw DirectionError.invaildAPIKey
+                }
                 return (nil, response.statusCode)
             }
             
@@ -123,7 +126,7 @@ public class DirectionAPI {
             let result = DirectionResponse(json)
             return (result, response.statusCode)
         } catch {
-            print("Failed to recive data from server. \(error)")
+            print("[DirectionAPI] Failed to get response from server.")
             throw DirectionError.internalError
         }
     }
@@ -133,7 +136,7 @@ public class DirectionAPI {
     /// - Parameters:
     ///     - origin: 출발지 정보
     ///     - destination: 목적지 정보
-    ///     - wayPoints: 경유지 정보. (최대 5개)
+    ///     - wayPoints: 경유지 배열(최대 30개)
     ///     - priority: 경로 탐색 우선순위
     ///     - avoid: 경로 탐색 제한
     ///     - roadEvent: 도로 통제 정보 반영 옵션
@@ -198,7 +201,9 @@ public class DirectionAPI {
             let (_data, response) = try await URLSession.shared.data(for: urlReq)
             let res = response as! HTTPURLResponse
             if res.statusCode != 200 {
-                print("[DirectionAPI] HTTP status code is not 200. return nil.")
+                if res.statusCode == 401 {
+                    throw DirectionError.invaildAPIKey
+                }
                 return (nil, res.statusCode)
             }
             let data = try? JSONSerialization.jsonObject(with: _data) as? [String: Any]
@@ -218,7 +223,7 @@ public class DirectionAPI {
     /// - Warning: priority .recommend 사용불가
     ///
     /// - Parameters:
-    ///     - origin: 출발지 배열
+    ///     - origin: 출발지 배열(최대 30개)
     ///     - destination: 목적지
     ///     - radius: 길찾기 반경(미터)(최대: 10000)
     ///     - priority: 경로 탐색 우선순위 (.recommend 사용불가)
@@ -227,7 +232,6 @@ public class DirectionAPI {
     ///
     /// - Returns: 요청 결과와 HTTP 상태코드를 튜플로 반환합니다. 상태코드가 200일때만 결과를 함께 반환합니다.
     /// - Throws: URL생성이나 JSON파싱 또는 응답수신에 문제가 있을경우 KakaoDirectionsError.internalError 를 반환합니다.
-    
     public func requestMultiOrigin(origins: [PositionWithKey],
                                    destination: Position,
                                    radius: Int,
@@ -239,6 +243,11 @@ public class DirectionAPI {
             print("[DirectionAPI] Cannot use priority .recommend in requstMultiOrigin!")
             throw DirectionError.internalError
         }
+        if origins.count < 1 {
+            print("[DirectionAPI] Origins count require at least 1 item")
+            throw DirectionError.tooFewArguments
+        }
+        
         let url = URL(string: "https://apis-navi.kakaomobility.com/v1/origins/directions")
         guard let url = url else {
             print("[DirectionAPI] Failed to create URL.")
@@ -279,6 +288,9 @@ public class DirectionAPI {
             let (_data, response) = try await URLSession.shared.data(for: urlReq)
             let code = (response as! HTTPURLResponse).statusCode
             if code != 200 {
+                if code == 401 {
+                    throw DirectionError.invaildAPIKey
+                }
                 return (nil, code)
             }
             let data = try? JSONSerialization.jsonObject(with: _data) as? [String: Any]
@@ -288,11 +300,97 @@ public class DirectionAPI {
             }
             return (MultiDirectionResponse(data), code)
         } catch {
-            print("[DirectionAPI] Failed to get response from API server.")
+            print("[DirectionAPI] Failed to get response from server.")
             throw DirectionError.internalError
         }
     }
     
+    /// 다중 출발지, 단일 목적지
+    ///
+    /// - Warning: priority .recommend 사용불가
+    ///
+    /// - Parameters:
+    ///     - origin: 출발지
+    ///     - destinations: 목적지 배열 (최대 30개)
+    ///     - radius: 길찾기 반경(미터)(최대: 10000)
+    ///     - priority: 경로 탐색 우선순위 (.recommend 사용불가)
+    ///     - avoid: 경로 탐색 제한 옵션
+    ///     - roadEvent: 도로 통제 정보 반영 옵션
+    ///
+    /// - Returns: 요청 결과와 HTTP 상태코드를 튜플로 반환합니다. 상태코드가 200일때만 결과를 함께 반환합니다.
+    /// - Throws: URL생성이나 JSON파싱 또는 응답수신에 문제가 있을경우 KakaoDirectionsError.internalError 를 반환합니다.
+    public func requestMultiDestination(origin: Position,
+                                   destinations: [PositionWithKey],
+                                   radius: Int,
+                                   priority: PriorityOption = .time,
+                                   avoid: [AvoidOption]? = nil,
+                                   roadEvent: RoadEventOption = .applyAll
+    ) async throws -> (result: MultiDirectionResponse?, statusCode: Int) {
+        if priority == .recommend {
+            print("[DirectionAPI] Cannot use priority .recommend in requstMultiOrigin!")
+            throw DirectionError.internalError
+        }
+        if destinations.count < 1 {
+            print("[DirectionAPI] Destination count require at least 1 item")
+            throw DirectionError.tooFewArguments
+        }
+        let url = URL(string: "https://apis-navi.kakaomobility.com/v1/destinations/directions")
+        guard let url = url else {
+            print("[DirectionAPI] Failed to create URL.")
+            throw DirectionError.internalError
+        }
+        var urlReq = URLRequest(url: url)
+        // Set method
+        urlReq.httpMethod = "POST"
+        // Set auth key
+        urlReq.setValue("KakaoAK \(self.apiKey)", forHTTPHeaderField: "Authorization")
+        urlReq.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        // Create Body
+        var rawBody: [String: Any] = [:]
+        rawBody["origin"] = origin.rawValue
+        rawBody["destinations"] = destinations.map({ item in
+            return item.rawValue
+        })
+        
+        rawBody["radius"] = radius
+        rawBody["priority"] = priority.rawValue
+        
+        if let avoid = avoid {
+            if avoid.count != 0 {
+                rawBody["avoid"] = avoid.map({ item in
+                    item.rawValue
+                })
+            }
+        }
+        rawBody["roadevent"] = roadEvent.rawValue
+        let body = try? JSONSerialization.data(withJSONObject: rawBody)
+        guard let body = body else {
+            print("[DirectionAPI] Failed to create http body Data")
+            throw DirectionError.internalError
+        }
+        
+        urlReq.httpBody = body
+        
+        do {
+            let (_data, response) = try await URLSession.shared.data(for: urlReq)
+            let code = (response as! HTTPURLResponse).statusCode
+            if code != 200 {
+                if code == 401 {
+                    throw DirectionError.invaildAPIKey
+                }
+                return (nil, code)
+            }
+            let data = try? JSONSerialization.jsonObject(with: _data) as? [String: Any]
+            guard let data = data else {
+                print("[DirectionAPI] Failed to convert json data")
+                throw DirectionError.internalError
+            }
+            return (MultiDirectionResponse(data), code)
+        } catch {
+            print("[DirectionAPI] Failed to get response from server.")
+            throw DirectionError.internalError
+        }
+    }   
     /// - Parameters:
     ///     - apiKey: 카카오디벨로퍼스에서 발급 받은 API키 값 (REST API Key 값)
     public init(apiKey: String) {

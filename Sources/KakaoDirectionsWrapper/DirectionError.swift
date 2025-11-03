@@ -7,4 +7,6 @@
 
 public enum DirectionError: Error {
     case internalError
+    case invaildAPIKey
+    case tooFewArguments
 }

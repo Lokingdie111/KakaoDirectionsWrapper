@@ -158,7 +158,7 @@ public class DirectionAPI {
                         carHipass: Bool = false,
                         summary: Bool = false,
     ) async throws -> (result: DirectionResponse?, statusCode: Int) {
-        let url = URL(string: "https://apis-navi.kakaomobility.com/v1/directions")
+        let url = URL(string: "https://apis-navi.kakaomobility.com/v1/waypoints/directions")
         guard let url = url else {
             print("[DirectionAPI] Failed to create URL...")
             throw DirectionError.internalError
@@ -185,12 +185,15 @@ public class DirectionAPI {
         rawBody["car_fuel"] = carFuel.rawValue
         rawBody["car_hipass"] = carHipass
         rawBody["summary"] = summary
+        print(rawBody)
         guard let bodyData = try? JSONSerialization.data(withJSONObject: rawBody) else {
             print("[DirectionAPI] Failed to convert body to Data")
             throw DirectionError.internalError
         }
         urlReq.httpBody = bodyData
         urlReq.setValue("KakaoAK \(self.apiKey)", forHTTPHeaderField: "Authorization")
+        urlReq.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlReq.httpMethod = "POST"
         
         do {
             let (_data, response) = try await URLSession.shared.data(for: urlReq)
@@ -227,19 +230,19 @@ public class DirectionAPI {
 ///     - y: Y좌표(위도)
 public struct Position {
     /// 이름
-    let name: String?
+    public let name: String?
     /// X좌표(경도)
-    let x: Double
+    public let x: Double
     /// Y좌표(위도)
-    let y: Double
+    public let y: Double
     
     /// 위도(Y좌표)
-    var latitude: Double {
+    public var latitude: Double {
         return y
     }
     
     /// 경도(X좌표)
-    var longtidue: Double {
+    public var longtidue: Double {
         return x
     }
     

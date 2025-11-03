@@ -8,7 +8,7 @@ import Foundation
 /// 객체 생성시 카카오 디벨로퍼스에서 발급받은 REST API KEY를 전달해주어야 합니다. \
 /// 카카오디벨로퍼스 주소: https://developers.kakao.com \
 /// 위 사이트에서 키를 발급받아 주십시오.
-public class DirectionAPI {
+public final class DirectionAPI: Sendable {
     private let apiKey: String
     
     /// 단일 출발지, 단일 목적지 길찾기 요청을 보냅니다.
@@ -28,7 +28,7 @@ public class DirectionAPI {
     ///     - summary: 요약 정보만 받을지 여부
     /// - Returns: 요청 결과와 HTTP 상태코드를 튜플로 반환합니다. 상태코드가 200일때만 결과를 함께 반환합니다.
     /// - Throws: URL생성이나 JSON파싱 또는 응답수신에 문제가 있을경우 KakaoDirectionsError.internalError 를 반환합니다.
-    nonisolated public func request(origin: Position,
+    public func request(origin: Position,
                         destination: Position,
                         wayPoints: [Position]? = nil,
                         priority: PriorityOption = .recommend,
@@ -148,7 +148,7 @@ public class DirectionAPI {
     ///     - summary: 요약 정보만 받을지 여부
     /// - Returns: 요청 결과와 HTTP 상태코드를 튜플로 반환합니다. 상태코드가 200일때만 결과를 함께 반환합니다.
     /// - Throws: URL생성이나 JSON파싱 또는 응답수신에 문제가 있을경우 KakaoDirectionsError.internalError 를 반환합니다.
-    nonisolated public func requestMultiWaypoints(origin: Position,
+    public func requestMultiWaypoints(origin: Position,
                         destination: Position,
                         wayPoints: [Position]? = nil,
                         priority: PriorityOption = .recommend,
@@ -232,7 +232,7 @@ public class DirectionAPI {
     ///
     /// - Returns: 요청 결과와 HTTP 상태코드를 튜플로 반환합니다. 상태코드가 200일때만 결과를 함께 반환합니다.
     /// - Throws: URL생성이나 JSON파싱 또는 응답수신에 문제가 있을경우 KakaoDirectionsError.internalError 를 반환합니다.
-    nonisolated public func requestMultiOrigin(origins: [PositionWithKey],
+    public func requestMultiOrigin(origins: [PositionWithKey],
                                    destination: Position,
                                    radius: Int,
                                    priority: PriorityOption = .time,
@@ -319,7 +319,7 @@ public class DirectionAPI {
     ///
     /// - Returns: 요청 결과와 HTTP 상태코드를 튜플로 반환합니다. 상태코드가 200일때만 결과를 함께 반환합니다.
     /// - Throws: URL생성이나 JSON파싱 또는 응답수신에 문제가 있을경우 KakaoDirectionsError.internalError 를 반환합니다.
-    nonisolated public func requestMultiDestination(origin: Position,
+    public func requestMultiDestination(origin: Position,
                                    destinations: [PositionWithKey],
                                    radius: Int,
                                    priority: PriorityOption = .time,

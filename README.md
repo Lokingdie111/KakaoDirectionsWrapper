@@ -30,7 +30,7 @@ Repo 주소. `https://github.com/Lokingdie111/KakaoDirectionsWrapper.git`
 |summary|요약 정보만 받을지 여부 (기본값 false)|Bool|
 #### 예제
 ```swift
-let directionAPI = DirectionAPI()
+let directionAPI = DirectionAPI(apiKey: key)
 
 Task {
     do {
@@ -57,7 +57,7 @@ Task {
     let waypoint5 = Position(name: "경유지5", longitude: 126.9784161, latitude: 37.568598)
     let waypoint6 = Position(name: "경유지6", longitude: 126.98414660, latitude: 37.571798563)
     
-    let directionAPI = DirectionAPI(apiKey: "")
+    let directionAPI = DirectionAPI(apiKey: key)
     Task {
         do {
         let (result, code) = try await directionAPI.requestMultiWaypoints(origin: origin, destination: destination, wayPoints: [waypoint1, waypoint2, waypoint3, waypoint4, waypoint5, waypoint6])       
@@ -68,10 +68,55 @@ Task {
 
 ```
 ### 단일 출발지, 다중 목적지 - requestMultiDestiation()
-여러 목적지로까지의 경로 정보를 요약 정보로 받아올수 있습니다. (추후 업데이트 예정)
+단일 출발지와 다중 목적지로 길찾기를 요청합니다. \ 
+자세한 길 정보는 반환하지 않습니다. 짧게 요약된 거리정보 예상 시간정보등만이 반환됩니다. \
+- priority에 .recommend는 사용할수 없습니다.
+|함수인자|설명|타입|
+|-----|---|--|
+|origin|출발지 정보 (**필수**)|Position|
+|destinations|목적지 배열 (**필수**)|[PositionWithKey]|
+|radius|길찾기 반경(미터)(최대: 10000)(**필수**)|Int|
+|priority|경로 탐색 우선순위 (기본값 .time)|PriorityOption|
+|avoid|경로 탐색 제한 (기본값 nil)|[AvoidOption]?|
+|roadEvent|도로 통제 정보 반영 옵션 (기본값 .applyAll)|RoadEventOption|
+#### 예제
+```swift
+    let destination1: PositionWithKey = PositionWithKey(key: "출발지1", longitude: 126.97815420, latitude: 37.5668601514026)
+    let destination2: PositionWithKey = PositionWithKey(key: "출발지2", longitude: 126.979864052, latitude: 37.5643917261)
+    
+    let origin = Position(name: "목적지", longitude: 126.9764161, latitude: 37.568598)
+    
+    let directionAPI = DirectionAPI(apiKey: key)
+    Task {
+        let result = try? await directionAPI.requestMultiDestination(origin: origin, destinations: [destination1, destination2], radius: 1000)   
+    }
 
+```
 ### 다중 출발지, 단일 목적지 - requestMultiOrigin()
-여러 출발지에서 한 목적지로까지의 경로 정보를 요약 정보로 받아올수 있습니다. (추후 업데이트 예정)
+다중 출발지와 단일 목적지로 길찾기를 요청합니다. \ 
+자세한 길 정보는 반환하지 않습니다. 짧게 요약된 거리정보 예상 시간정보등만이 반환됩니다. \
+- priority에 .recommend는 사용할수 없습니다.
+|함수인자|설명|타입|
+|-----|---|--|
+|origins|출발지 배열 (**필수**)|[PositionWithKey]|
+|destination|목적지 (**필수**)|Position|
+|radius|길찾기 반경(미터)(최대: 10000)(**필수**)|Int|
+|priority|경로 탐색 우선순위 (기본값 .time)|PriorityOption|
+|avoid|경로 탐색 제한 (기본값 nil)|[AvoidOption]?|
+|roadEvent|도로 통제 정보 반영 옵션 (기본값 .applyAll)|RoadEventOption|
+#### 예제
+```swift
+    let origin1: PositionWithKey = PositionWithKey(key: "출발지1", longitude: 126.97815420, latitude: 37.5668601514026)
+    let origin2: PositionWithKey = PositionWithKey(key: "출발지2", longitude: 126.979864052, latitude: 37.5643917261)
+    
+    let destination = Position(name: "목적지", longitude: 126.9764161, latitude: 37.568598)
+    
+    let directionAPI = DirectionAPI(apiKey: key)
+    Task {
+        let result = try? await directionAPI.requestMultiOrigin(origins: [origin1, origin2], destination: destination, radius: 1000)   
+    }
+
+```
 ## DirectionResponse
 request()와 requestMultiWaypoints()는 이 구조체로 반환됩니다. \
 이 구조체는 API응답 결과를 담고있습니다. \

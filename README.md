@@ -6,7 +6,7 @@ Xcode의 SPM을 통해 프로젝트에 패키지를 추가할수 있습니다. \
 Repo 주소. `https://github.com/Lokingdie111/KakaoDirectionsWrapper.git`
 ### 카카오 길찾기 API 키
 이 Wrapper를 통해 길찾기 요청을 보내기 위해서는 카카오디벨로퍼스에서 API 키를 발급받아 사용해야합니다.
-- 카카오 디벨로퍼스 홈페이지: [바로가기](https://developers.kakao.com)
+- 카카오 디벨로퍼스 홈페이지: `https://developers.kakao.com`
 
 ## DirectionAPI
 카카오 길찾기 API로 요청을 보내어 응답결과를 받습니다.

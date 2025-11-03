@@ -128,6 +128,90 @@ public class DirectionAPI {
         }
     }
     
+    /// 다중 경유지 요청을 보냅니다.
+    ///
+    /// - Parameters:
+    ///     - origin: 출발지 정보
+    ///     - destination: 목적지 정보
+    ///     - wayPoints: 경유지 정보. (최대 5개)
+    ///     - priority: 경로 탐색 우선순위
+    ///     - avoid: 경로 탐색 제한
+    ///     - roadEvent: 도로 통제 정보 반영 옵션
+    ///     - alternatives: 대안 경로 제공 여부
+    ///     - roadDetails: 상세 도로 제공 여부
+    ///     - carType: 차종 정보
+    ///     - carFuel: 차량 유종 정보
+    ///     - carHipass: 하이패스 장착 여부
+    ///     - summary: 요약 정보만 받을지 여부
+    /// - Returns: 요청 결과와 HTTP 상태코드를 튜플로 반환합니다. 상태코드가 200일때만 결과를 함께 반환합니다.
+    /// - Throws: URL생성이나 JSON파싱 또는 응답수신에 문제가 있을경우 KakaoDirectionsError.internalError 를 반환합니다.   
+    public func requestMultiWaypoints(origin: Position,
+                        destination: Position,
+                        wayPoints: [Position]? = nil,
+                        priority: PriorityOption = .recommend,
+                        avoid: [AvoidOption]? = nil,
+                        roadEvent: RoadEventOption = .applyAll,
+                        alternatives: Bool = false,
+                        roadDetails: Bool = false,
+                        carType: CarType = .small,
+                        carFuel: CarFuelType = .gasoline,
+                        carHipass: Bool = false,
+                        summary: Bool = false,
+    ) async throws -> (result: DirectionResponse?, statusCode: Int) {
+        let url = URL(string: "https://apis-navi.kakaomobility.com/v1/directions")
+        guard let url = url else {
+            print("[DirectionAPI] Failed to create URL...")
+            throw DirectionError.internalError
+        }
+        var urlReq = URLRequest(url: url)
+        var rawBody: [String: Any] = [:]
+        rawBody["origin"] = origin.rawValue
+        rawBody["destination"] = destination.rawValue
+        if let wayPoints = wayPoints {
+            rawBody["waypoints"] = wayPoints.map({ item in
+                return item.rawValue
+            })
+        }
+        rawBody["priority"] = priority.rawValue
+        if let avoid = avoid {
+            rawBody["avoid"] = avoid.map({ item in
+                item.rawValue
+            })
+        }
+        rawBody["roadevent"] = roadEvent.rawValue
+        rawBody["alternatives"] = alternatives
+        rawBody["road_details"] = roadDetails
+        rawBody["car_type"] = carType.rawValue
+        rawBody["car_fuel"] = carFuel.rawValue
+        rawBody["car_hipass"] = carHipass
+        rawBody["summary"] = summary
+        guard let bodyData = try? JSONSerialization.data(withJSONObject: rawBody) else {
+            print("[DirectionAPI] Failed to convert body to Data")
+            throw DirectionError.internalError
+        }
+        urlReq.httpBody = bodyData
+        urlReq.setValue("KakaoAK \(self.apiKey)", forHTTPHeaderField: "Authorization")
+        
+        do {
+            let (_data, response) = try await URLSession.shared.data(for: urlReq)
+            let res = response as! HTTPURLResponse
+            if res.statusCode != 200 {
+                print("[DirectionAPI] HTTP status code is not 200. return nil.")
+                return (nil, res.statusCode)
+            }
+            let data = try? JSONSerialization.jsonObject(with: _data) as? [String: Any]
+            guard let data = data else {
+                print("[DirectionAPI] Failed to decode data.")
+                throw DirectionError.internalError
+            }
+            let result = DirectionResponse(data)
+            return (result, res.statusCode)
+        } catch {
+            print("[DirectionAPI] Failed to get response from server.")
+            throw DirectionError.internalError
+        }
+    }
+    
     /// - Parameters:
     ///     - apiKey: 카카오디벨로퍼스에서 발급 받은 API키 값 (REST API Key 값)
     public init(apiKey: String) {
@@ -158,6 +242,18 @@ public struct Position {
     var longtidue: Double {
         return x
     }
+    
+    /// key-value로 표현한 dict
+    var rawValue: [String: Any] {
+        get {
+            if let name = name {
+                return ["x" : x, "y" : y, "name" : name]
+            } else {
+                return ["x" : x, "y" : y]
+            }
+        }
+    }
+    
     public init(name: String? = nil, x: Double, y: Double) {
         self.name = name
         self.x = x

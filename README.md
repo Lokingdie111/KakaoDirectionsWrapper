@@ -43,7 +43,7 @@ Task {
 }
 ```
 
-### 단일 출발지, 단일 목적지, 다중 경유지 - requestMultiWayPoints()
+### 단일 출발지, 단일 목적지, 다중 경유지 - requestMultiWaypoints()
 경유지를 최대 30개까지 사용할수 있습니다. (추후 업데이트 예정)
 
 ### 단일 출발지, 다중 목적지 - requestMultiDestiation()

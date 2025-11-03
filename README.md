@@ -45,7 +45,28 @@ Task {
 
 ### 단일 출발지, 단일 목적지, 다중 경유지 - requestMultiWaypoints()
 - 경유지를 최대 30개까지 사용할수 있습니다. 그 이외의 것들을 단일 출발지, 단일 목적지와 같습니다.
+#### 예제
+```swift
+    let origin: Position = Position(name: "서울 시청", longitude: 126.97815420, latitude: 37.5668601514026)
+    let destination: Position = Position(name: "웨스턴 조선 서울",longitude: 126.979864052, latitude: 37.5643917261)
+    
+    let waypoint1 = Position(name: "경유지1", longitude: 126.9764161, latitude: 37.568598)
+    let waypoint2 = Position(name: "경유지2", longitude: 126.98414660, latitude: 37.571798563)
+    let waypoint3 = Position(name: "경유지3", longitude: 126.9774161, latitude: 37.568598)
+    let waypoint4 = Position(name: "경유지4", longitude: 126.98414660, latitude: 37.571798563)
+    let waypoint5 = Position(name: "경유지5", longitude: 126.9784161, latitude: 37.568598)
+    let waypoint6 = Position(name: "경유지6", longitude: 126.98414660, latitude: 37.571798563)
+    
+    let directionAPI = DirectionAPI(apiKey: "")
+    Task {
+        do {
+        let (result, code) = try await directionAPI.requestMultiWaypoints(origin: origin, destination: destination, wayPoints: [waypoint1, waypoint2, waypoint3, waypoint4, waypoint5, waypoint6])       
+        } catch {
+            print("Failed to get response from server.")
+        }
+    }
 
+```
 ### 단일 출발지, 다중 목적지 - requestMultiDestiation()
 여러 목적지로까지의 경로 정보를 요약 정보로 받아올수 있습니다. (추후 업데이트 예정)
 

@@ -28,7 +28,7 @@ public class DirectionAPI {
     ///     - summary: 요약 정보만 받을지 여부
     /// - Returns: 요청 결과와 HTTP 상태코드를 튜플로 반환합니다. 상태코드가 200일때만 결과를 함께 반환합니다.
     /// - Throws: URL생성이나 JSON파싱 또는 응답수신에 문제가 있을경우 KakaoDirectionsError.internalError 를 반환합니다.
-    public func request(origin: Position,
+    nonisolated public func request(origin: Position,
                         destination: Position,
                         wayPoints: [Position]? = nil,
                         priority: PriorityOption = .recommend,
@@ -148,7 +148,7 @@ public class DirectionAPI {
     ///     - summary: 요약 정보만 받을지 여부
     /// - Returns: 요청 결과와 HTTP 상태코드를 튜플로 반환합니다. 상태코드가 200일때만 결과를 함께 반환합니다.
     /// - Throws: URL생성이나 JSON파싱 또는 응답수신에 문제가 있을경우 KakaoDirectionsError.internalError 를 반환합니다.
-    public func requestMultiWaypoints(origin: Position,
+    nonisolated public func requestMultiWaypoints(origin: Position,
                         destination: Position,
                         wayPoints: [Position]? = nil,
                         priority: PriorityOption = .recommend,
@@ -232,7 +232,7 @@ public class DirectionAPI {
     ///
     /// - Returns: 요청 결과와 HTTP 상태코드를 튜플로 반환합니다. 상태코드가 200일때만 결과를 함께 반환합니다.
     /// - Throws: URL생성이나 JSON파싱 또는 응답수신에 문제가 있을경우 KakaoDirectionsError.internalError 를 반환합니다.
-    public func requestMultiOrigin(origins: [PositionWithKey],
+    nonisolated public func requestMultiOrigin(origins: [PositionWithKey],
                                    destination: Position,
                                    radius: Int,
                                    priority: PriorityOption = .time,
@@ -319,7 +319,7 @@ public class DirectionAPI {
     ///
     /// - Returns: 요청 결과와 HTTP 상태코드를 튜플로 반환합니다. 상태코드가 200일때만 결과를 함께 반환합니다.
     /// - Throws: URL생성이나 JSON파싱 또는 응답수신에 문제가 있을경우 KakaoDirectionsError.internalError 를 반환합니다.
-    public func requestMultiDestination(origin: Position,
+    nonisolated public func requestMultiDestination(origin: Position,
                                    destinations: [PositionWithKey],
                                    radius: Int,
                                    priority: PriorityOption = .time,

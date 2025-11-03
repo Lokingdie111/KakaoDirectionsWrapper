@@ -131,3 +131,8 @@ requestMultiOrigin()과 requestMultiDestination()은 이 구조체로 반환됩�
 각각의 프로퍼티들의 의미는 Xcode의 Quick-help 또는 카카오 길찾기 API 도큐먼트에서 확인할수 있습니다. \
 DirectionResponse와 비교해 이 구조체는 경로의 상세정보를 포함하지 않습니다.
 [카카오 길찾기 API 바로가기](https://developers.kakaomobility.com/docs/navi-api)
+
+## API 결과 코드
+각각의 Response 구조체들은 내부에 result_code 등 여러가지 정보를 담고있는 정수형 값이 있습니다. \
+각각의 숫자에 대한 의미는 다음 사이트에 기술되어있습니다. \
+[결과 코드 레퍼런스](https://developers.kakaomobility.com/docs/navi-api/reference/)

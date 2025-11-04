@@ -48,7 +48,7 @@ public struct DirectionResponse {
         ///     - section3: 경유지 2 -> 목적지
         public let sections: [Section]
         
-        public init(_ routeObj: [String: Any]) {
+        init(_ routeObj: [String: Any]) {
             self.result_code = routeObj["result_code"] as! Int
             self.result_msg = routeObj["result_msg"] as! String
             let summaryObj = routeObj["summary"] as! [String: Any]
@@ -69,7 +69,7 @@ public extension DirectionResponse {
         public let taxi: Int
         /// 통행 요금 (원)
         public let toll: Int
-        public init(_ obj: [String: Int]) {
+        init(_ obj: [String: Int]) {
             self.taxi = obj["taxi"]!
             self.toll = obj["toll"]!
         }
@@ -93,7 +93,7 @@ public extension DirectionResponse {
         /// 목적지까지 소요 시간(초)
         public let duration: Int
         
-        public init(_ summaryObj: [String: Any]) {
+        init(_ summaryObj: [String: Any]) {
             let origin = summaryObj["origin"] as! [String: Any]
             self.origin = Point(origin)
             let destination = summaryObj["destination"] as! [String: Any]
@@ -138,7 +138,7 @@ public extension DirectionResponse {
         ///
         /// summary가 false인 경우에만 제공
         public let guides: [Guide]?
-        public init(_ sectionObj: [String: Any]) {
+        init(_ sectionObj: [String: Any]) {
             self.distance = sectionObj["distance"] as! Int
             self.duration = sectionObj["duration"] as! Int
             if let obj = sectionObj["bound"] as? [String: Double] {
@@ -177,7 +177,7 @@ public extension DirectionResponse {
         public let x: Double
         /// Y좌표(위도)
         public let y: Double
-        public init(_ obj: [String: Any]) {
+        init(_ obj: [String: Any]) {
             self.name = obj["name"] as! String
             self.x = obj["x"] as! Double
             self.y = obj["y"] as! Double
@@ -194,7 +194,7 @@ public extension DirectionResponse {
         /// 박스 우상단 y좌표
         public let max_y: Double
         
-        public init(_ obj: [String: Double]) {
+        init(_ obj: [String: Double]) {
             self.min_x = obj["min_x"]!
             self.min_y = obj["min_y"]!
             self.max_x = obj["max_x"]!
@@ -215,7 +215,7 @@ public extension DirectionResponse {
         /// X,Y 좌표로 구성된 1차원 배열
         public let vertexes: [Double]
         
-        public init(_ roadObj: [String: Any]) {
+        init(_ roadObj: [String: Any]) {
             self.name = roadObj["name"] as! String
             self.distance = roadObj["distance"] as! Int
             self.duration = roadObj["duration"] as! Int
@@ -241,7 +241,7 @@ public extension DirectionResponse {
         public let guidance: String
         /// 현재 가이드에 대한 링크 인덱스
         public let road_index: Int
-        public init(_ guideObj: [String: Any]) {
+        init(_ guideObj: [String: Any]) {
             self.name = guideObj["name"] as! String
             self.x = guideObj["x"] as! Double
             self.y = guideObj["y"] as! Double

@@ -30,7 +30,7 @@ public extension MultiDirectionResponse {
         /// 경로 요약 정보
         let summary: Summary
         
-        public init(_ routeObj: [String: Any]) {
+        init(_ routeObj: [String: Any]) {
             self.result_code = routeObj["result_code"] as! Int
             self.result_msg = routeObj["result_msg"] as! String
             self.key = routeObj["key"] as! String
@@ -43,7 +43,7 @@ public extension MultiDirectionResponse {
         let distance: Int
         /// 목적지까지 소요 시간(초)
         let duration: Int
-        public init(_ summaryObj: [String: Any]) {
+        init(_ summaryObj: [String: Any]) {
             self.distance = summaryObj["distance"] as! Int
             self.duration = summaryObj["duration"] as! Int
         }

@@ -37,7 +37,7 @@ public struct DirectionResponse {
         /// 경로 탐색 결과 메시지
         public let result_msg: String
         /// 경로 요약 정보
-        public let summary: Summary
+        public let summary: Summary?
         
         /// 구간별 경로 정보
         ///
@@ -46,19 +46,28 @@ public struct DirectionResponse {
         ///     - section1: 출발지 -> 경유지 1
         ///     - section2: 경유지 1 -> 경유지 2
         ///     - section3: 경유지 2 -> 목적지
-        public let sections: [Section]
+        public let sections: [Section]?
         
         init(_ routeObj: [String: Any]) {
             self.result_code = routeObj["result_code"] as! Int
             self.result_msg = routeObj["result_msg"] as! String
-            let summaryObj = routeObj["summary"] as! [String: Any]
-            self.summary = Summary(summaryObj)
-            let sectionsObj = routeObj["sections"] as! [[String: Any]]
-            var sections:[Section] = []
-            for sectionObj in sectionsObj {
-                sections.append(Section(sectionObj))
+            let summaryObj = routeObj["summary"] as? [String: Any]
+            if let summaryObj = summaryObj {
+                self.summary = Summary(summaryObj)
+            } else {
+                self.summary = nil
             }
-            self.sections = sections
+            let sectionsObj = routeObj["sections"] as? [[String: Any]]
+            if let sectionsObj = sectionsObj {
+                var sections:[Section] = []
+                for sectionObj in sectionsObj {
+                    sections.append(Section(sectionObj))
+                }
+                self.sections = sections
+            } else {
+                self.sections = nil
+            }
+
         }
     }
 }

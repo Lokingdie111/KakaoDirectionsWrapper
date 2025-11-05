@@ -28,13 +28,18 @@ public extension MultiDirectionResponse {
         /// origins의 key 값으로 지정한 각 출발지의 키 값
         let key: String
         /// 경로 요약 정보
-        let summary: Summary
+        let summary: Summary?
         
         init(_ routeObj: [String: Any]) {
             self.result_code = routeObj["result_code"] as! Int
             self.result_msg = routeObj["result_msg"] as! String
             self.key = routeObj["key"] as! String
-            self.summary = Summary(routeObj["summary"] as! [String: Any])
+            let summaryObj = routeObj["summary"] as? [String: Any]
+            if let summaryObj = summaryObj {
+                self.summary = Summary(summaryObj)
+            } else {
+                self.summary = nil
+            }
         }
     }
     
